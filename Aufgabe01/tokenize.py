@@ -8,10 +8,12 @@ from string import punctuation
 sentence_marker = ('.', '!', '?', '.)', '.]', '."')
 # accepts numbers of form 1,23 and 1.23
 float_regex = r'\d+(\.|\,)\d+'
-# considers (optional) http:// or https:// and extensions of the form /.../...
+# considers (optional) http:// or https:// and extensions of the form "/.../...".
+# URLs are often enclosed in () brackets - this is why they're also considered here
 website_regex = r'\(*(http:\/{2}|https:\/{2})*(www\.).+\.\w{2,3}(\/\w*)*\)*'
 
 
+"""Reads extracted text and abbreviations."""
 def read_files(abbreviations_path, text_path):
     with open(text_path, "r") as f:
         text = f.read()

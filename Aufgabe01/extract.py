@@ -25,6 +25,7 @@ is encountered, its content is read into a string, until the tag closes."""
 class Parser(HTMLParser):
 
     def __init__(self):
+        # initialize the HTMLParser class first in order to proceed
         super().__init__()
         self.relevant_tags = ["p", "div", "h1", "h2", "h3", "blockquote"]
         self.is_reading_text = False
