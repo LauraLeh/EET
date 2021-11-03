@@ -1,0 +1,10 @@
+Für jede Flexionsklasse: ein .lex File. Zum Beispiel "noun-s-e.lex".
+
+Die Regeln der Flexionsklasse kommen alle in morph.fst.
+Bspw. die Flexionsregeln für die Nomenklasse "-s/-e" sind gespeichert als $noun-s-e$.
+Siehe auch: SFST Tutorial Seite 9.
+
+Konkatenation des Lexikons mit dem Flexionstransducer:
+"noun-s-e.lex" $noun-s-e$
+
+Das muss für jede Flexionsklasse gemacht werden.
