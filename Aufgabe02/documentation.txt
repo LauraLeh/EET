@@ -1,0 +1,39 @@
+DOKUMENTATION SFST
+
+## NOMEN
+
+# Klasse [-(e)s/-e]
+# Quelle: https://dict.leo.org/grammatik/deutsch/Wort/Nomen/FRegeln-N/FKlassen/Klasse-es-e1.html?lang=de
+
+Phänomen: Im Normalfall soll im Genitiv Singular die Endung -s angehängt werden,
+z.B. Abend -> Abends. Die Ausnahme bilden Nomen, die auf -s, -ß, -x oder -z enden.
+Hier wird die Endung -es angehängt, z.B. Strauß -> Straußes, Glas -> Glases.
+
+# Klasse [-s/-s]
+# Quelle: https://dict.leo.org/grammatik/deutsch/Wort/Nomen/FRegeln-N/FKlassen/Klasse-s-s1.html?lang=de
+
+Keine Ausnahmen.
+
+
+## VERBEN
+
+# Klasse [regelmäßig, indikativ]
+# Quelle: https://dict.leo.org/grammatik/deutsch/Wort/Verb/FRegeln-V/Tabellen/Pres-1.html?lang=de
+und https://dict.leo.org/grammatik/deutsch/Wort/Verb/FRegeln-V/Tabellen/Pret-Reg1.html?lang=de
+
+Keine Ausnahmen.
+
+
+## ADJEKTIVE
+
+# Klasse [regelmäßig]
+
+Keine Ausnahmen.
+
+# Klasse [Endung -el]
+# Quelle: https://www.gut-in-deutsch.com/post/2015/08/06/deklination-der-adjektive-auf-el-er-en-1
+
+Phänomen: Bei Adjektiven, die auf -el enden, entfällt beim Komparativ in der Grundform des Adjektivs ein "e", z.B. dunkel -> dunkler, flexibel -> flexibler
+
+
+

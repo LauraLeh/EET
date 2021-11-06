@@ -1,0 +1,14 @@
+Berg
+Glas
+Strauß
+Schluss
+Reflex
+Sturz
+Abend
+Käfig
+Nachbar
+Reichtum
+Kamel
+Staat
+Insekt
+Buch
