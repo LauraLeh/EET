@@ -4,7 +4,7 @@ word1 = sys.argv[1]
 word2 = sys.argv[2]
 n, m = len(word1), len(word2)
 
-seq_matrix = [[] for _ in range(len(word1)+1)]
+seq_matrix = [[] for _ in range(n+1)]
 
 for i in range(n+1):
     for k in range(m+1):
