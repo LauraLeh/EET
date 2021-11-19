@@ -41,7 +41,7 @@ def train(path): # read all files, calculate frequency of classes, calculate fre
             freq_w_c[c] = defaultdict(int)
             freq_c[c] = 0
         for file in files:
-            with open(os.path.join(root, file), "r") as auto: #, encoding="ISO-8859-1"
+            with open(os.path.join(root, file), "r", encoding="utf-8") as auto:
                 for c in freq_w_c.keys():
                     if c in os.path.join(root, file):
                         text = auto.read()
@@ -54,11 +54,10 @@ def train(path): # read all files, calculate frequency of classes, calculate fre
     prob_w_c = calc_prob_w_c(rel_w_c, freq_w)
     return prob_w_c, prob_c
 
-path = "./Laura_test" # noch ndern!!
-prob_w_c, prob_c = train(path)
-print(prob_w_c, prob_c)
-'''print(sys.argv[1])
-print(sys.argv[2])'''
-with open(path+"/paramfile", 'w') as j_file:
-    json.dump(prob_w_c, j_file)
-    json.dump(prob_c, j_file)
+
+if __name__ == "__main__":
+    path = sys.argv[1]
+    prob_w_c, prob_c = train(path)
+    with open(path+"/"+sys.argv[2], 'w', encoding="utf-8") as j_file:
+        json.dump(prob_w_c, j_file)
+        json.dump(prob_c, j_file)
