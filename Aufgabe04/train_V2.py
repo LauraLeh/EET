@@ -23,14 +23,14 @@ def calc_rel_freq(f_w_c, f_w): # calculate relative Hufigkeit
     return f_w_c
 
 def calc_prob_w_c(r_w_c, f_w): # calculate p(w|c)
-    prob_w_c = defaultdict()
+    p_w_c = defaultdict()
     N = sum(f_w.values())
     for c, d in r_w_c.items():
         backoff = 1-sum(d.values())
-        prob_w_c[c] = defaultdict(float)
+        p_w_c[c] = defaultdict(float)
         for w, f in d.items():
-            prob_w_c[c][w] = f + backoff * (f_w[w] / N)
-    return prob_w_c
+            p_w_c[c][w] = f + backoff * (f_w[w] / N)
+    return p_w_c
 
 def train(path): # read all files, calculate frequency of classes, calculate frequency of words given class
     freq_w_c = defaultdict()  # {class:{word:freq, word:freq, word:freq, ...}, class:{word:freq, ...}, ...}
@@ -41,23 +41,22 @@ def train(path): # read all files, calculate frequency of classes, calculate fre
             freq_w_c[c] = defaultdict(int)
             freq_c[c] = 0
         for file in files:
-            with open(os.path.join(root, file), "r", encoding="utf-8") as auto:
+            with open(os.path.join(root, file), "r", encoding="ISO-8859-1") as auto:
                 for c in freq_w_c.keys():
-                    if c in os.path.join(root, file):
+                    if c in root:
                         text = auto.read()
                         freq_c[c] += 1
                         for word in text.split():
                             freq_w_c[c][word] += 1
                             freq_w[word] += 1
-    prob_c = calc_prob_c(freq_c)
-    rel_w_c = calc_rel_freq(freq_w_c, freq_w)
-    prob_w_c = calc_prob_w_c(rel_w_c, freq_w)
-    return prob_w_c, prob_c
+    p_c = calc_prob_c(freq_c)
+    r_w_c = calc_rel_freq(freq_w_c, freq_w)
+    p_w_c = calc_prob_w_c(r_w_c, freq_w)
+    return p_w_c, p_c
 
 
 if __name__ == "__main__":
     path = sys.argv[1]
     prob_w_c, prob_c = train(path)
-    with open(path+"/"+sys.argv[2], 'w', encoding="utf-8") as j_file:
-        json.dump(prob_w_c, j_file)
-        json.dump(prob_c, j_file)
+    with open(sys.argv[2], 'w', encoding="utf-8") as j_file:
+        json.dump([prob_w_c, prob_c], j_file)
