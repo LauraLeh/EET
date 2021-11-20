@@ -19,8 +19,7 @@ def test(path):
     pos, neg = 0, 0
     with open(sys.argv[1], "r") as parameter:
         data = json.load(parameter)
-        prob_w_c = data[0]  # {class->{word->prob}}
-        prob_c = data[1]  #
+        prob_w_c, prob_c = data[0], data[1]  # {class->{word->prob}}, {class->freq}
         # print(prob_w_c, prob_c)
     for root, dirs, files in os.walk(path):
         for file in files:
