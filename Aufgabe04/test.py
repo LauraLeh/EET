@@ -8,10 +8,7 @@ import math
 def classifyer(text, p_w_c, p_c):
     all_c_prob = defaultdict(float)
     for c, c_prob in p_c.items():
-        score = math.log(c_prob)
-        for word in text.split():
-            if word in p_w_c[c].keys():
-                score += math.log(p_w_c[c][word])
+        score = math.log(c_prob) + sum(math.log(p_w_c[c][word]) for word in text.split() if word in p_w_c[c].keys())
         all_c_prob[c] = score
     label = max(all_c_prob, key=all_c_prob.get)
     max_score = max(all_c_prob.values())
@@ -38,8 +35,9 @@ def test(path):
                     pos += 1
                 else:
                     neg += 1
-                print("Label: ", label, "Gold:", gold, "for file", os.path.join(root, file))
+                print("Label:", label, "Gold:", gold, "for file", os.path.join(root, file))
     print("Accuracy:", pos/(pos+neg))
+
 
 if __name__ == "__main__":
     test(sys.argv[2])

@@ -1,11 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="6a39a28c-03bc-49da-b735-b88abea451c5" name="Default Changelist" comment="Aufgabe 4 - Problem gelöst">
+    <list default="true" id="6a39a28c-03bc-49da-b735-b88abea451c5" name="Default Changelist" comment="Aufgabe 4 - test.py, train.py verbessert">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Aufgabe04/test.py" beforeDir="false" afterPath="$PROJECT_DIR$/Aufgabe04/test.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Aufgabe04/train.py" beforeDir="false" afterPath="$PROJECT_DIR$/Aufgabe04/train.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Aufgabe04/train_V2.py" beforeDir="false" afterPath="$PROJECT_DIR$/Aufgabe04/train_V2.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -202,7 +200,14 @@
       <option name="project" value="LOCAL" />
       <updated>1637312158157</updated>
     </task>
-    <option name="localTasksCounter" value="10" />
+    <task id="LOCAL-00010" summary="Aufgabe 4 - test.py, train.py verbessert">
+      <created>1637418761880</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1637418761880</updated>
+    </task>
+    <option name="localTasksCounter" value="11" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -254,6 +259,7 @@
     <MESSAGE value="Aufgabe 4" />
     <MESSAGE value="Aufgabe 4 - Problem mit print in json" />
     <MESSAGE value="Aufgabe 4 - Problem gelöst" />
-    <option name="LAST_COMMIT_MESSAGE" value="Aufgabe 4 - Problem gelöst" />
+    <MESSAGE value="Aufgabe 4 - test.py, train.py verbessert" />
+    <option name="LAST_COMMIT_MESSAGE" value="Aufgabe 4 - test.py, train.py verbessert" />
   </component>
 </project>
