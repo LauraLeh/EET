@@ -46,8 +46,9 @@ def read_data(train_path):
         class_dir = os.path.join(train_path, cls)
         for file in os.listdir(class_dir):
             with open(os.path.join(class_dir, file), 'r', encoding="ISO-8859-1") as text:
+                text = text.read()
                 freq_c[cls] += 1
-                for word in text.read().split():
+                for word in text.split():
                     freq_w_c[cls][word] += 1
                     freq_w[word] += 1
 
