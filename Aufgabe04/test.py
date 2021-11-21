@@ -36,8 +36,8 @@ def test(path):
                     pos += 1
                 else:
                     neg += 1
-                print("Label:", label, "Gold:", gold, "for file", file_path)
-    print("Accuracy:", pos/(pos+neg))
+                print(f"Label: {label} Gold:{gold} for file {file_path}")
+    print(f"Accuracy:{pos/(pos+neg)}")
 
 
 if __name__ == "__main__":
