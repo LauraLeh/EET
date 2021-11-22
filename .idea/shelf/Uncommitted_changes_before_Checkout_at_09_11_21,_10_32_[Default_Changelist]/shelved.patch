@@ -1,0 +1,87 @@
+Index: .idea/workspace.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<project version=\"4\">\n  <component name=\"ChangeListManager\">\n    <list default=\"true\" id=\"6a39a28c-03bc-49da-b735-b88abea451c5\" name=\"Default Changelist\" comment=\"Dt Engl Bsp\">\n      <change afterPath=\"$PROJECT_DIR$/Aufgabe02/deutsch/noun-en.lex\" afterDir=\"false\" />\n      <change afterPath=\"$PROJECT_DIR$/Aufgabe02/deutsch/noun-wo-infl.lex\" afterDir=\"false\" />\n      <change beforePath=\"$PROJECT_DIR$/.idea/workspace.xml\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/.idea/workspace.xml\" afterDir=\"false\" />\n      <change beforePath=\"$PROJECT_DIR$/Aufgabe02/deutsch/morph.a\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/Aufgabe02/deutsch/morph.a\" afterDir=\"false\" />\n      <change beforePath=\"$PROJECT_DIR$/Aufgabe02/deutsch/morph.fst\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/Aufgabe02/deutsch/morph.fst\" afterDir=\"false\" />\n      <change beforePath=\"$PROJECT_DIR$/Aufgabe02/deutsch/noun-reg.lex\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/Aufgabe02/deutsch/noun-reg.lex\" afterDir=\"false\" />\n    </list>\n    <option name=\"SHOW_DIALOG\" value=\"false\" />\n    <option name=\"HIGHLIGHT_CONFLICTS\" value=\"true\" />\n    <option name=\"HIGHLIGHT_NON_ACTIVE_CHANGELIST\" value=\"false\" />\n    <option name=\"LAST_RESOLUTION\" value=\"IGNORE\" />\n  </component>\n  <component name=\"Git.Settings\">\n    <option name=\"RECENT_GIT_ROOT_PATH\" value=\"$PROJECT_DIR$\" />\n  </component>\n  <component name=\"ProjectId\" id=\"200FrtBcRmfaGZWygm8JWKYYFJh\" />\n  <component name=\"ProjectViewState\">\n    <option name=\"hideEmptyMiddlePackages\" value=\"true\" />\n    <option name=\"showLibraryContents\" value=\"true\" />\n  </component>\n  <component name=\"PropertiesComponent\">\n    <property name=\"RunOnceActivity.OpenProjectViewOnStart\" value=\"true\" />\n    <property name=\"RunOnceActivity.ShowReadmeOnStart\" value=\"true\" />\n    <property name=\"last_opened_file_path\" value=\"$PROJECT_DIR$/Aufgabe01\" />\n    <property name=\"settings.editor.selected.configurable\" value=\"org.jetbrains.plugins.github.ui.GithubSettingsConfigurable\" />\n  </component>\n  <component name=\"SpellCheckerSettings\" RuntimeDictionaries=\"0\" Folders=\"0\" CustomDictionaries=\"0\" DefaultDictionary=\"application-level\" UseSingleDictionary=\"true\" transferred=\"true\" />\n  <component name=\"TaskManager\">\n    <task active=\"true\" id=\"Default\" summary=\"Default task\">\n      <changelist id=\"6a39a28c-03bc-49da-b735-b88abea451c5\" name=\"Default Changelist\" comment=\"\" />\n      <created>1635173799456</created>\n      <option name=\"number\" value=\"Default\" />\n      <option name=\"presentableId\" value=\"Default\" />\n      <updated>1635173799456</updated>\n    </task>\n    <task id=\"LOCAL-00001\" summary=\"Dt Engl Bsp\">\n      <created>1635290846611</created>\n      <option name=\"number\" value=\"00001\" />\n      <option name=\"presentableId\" value=\"LOCAL-00001\" />\n      <option name=\"project\" value=\"LOCAL\" />\n      <updated>1635290846611</updated>\n    </task>\n    <option name=\"localTasksCounter\" value=\"2\" />\n    <servers />\n  </component>\n  <component name=\"Vcs.Log.Tabs.Properties\">\n    <option name=\"TAB_STATES\">\n      <map>\n        <entry key=\"MAIN\">\n          <value>\n            <State />\n          </value>\n        </entry>\n      </map>\n    </option>\n    <option name=\"oldMeFiltersMigrated\" value=\"true\" />\n  </component>\n  <component name=\"VcsManagerConfiguration\">\n    <MESSAGE value=\"Dt Engl Bsp\" />\n    <option name=\"LAST_COMMIT_MESSAGE\" value=\"Dt Engl Bsp\" />\n  </component>\n</project>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/workspace.xml b/.idea/workspace.xml
+--- a/.idea/workspace.xml	
++++ b/.idea/workspace.xml	
+@@ -1,13 +1,9 @@
+ <?xml version="1.0" encoding="UTF-8"?>
+ <project version="4">
+   <component name="ChangeListManager">
+-    <list default="true" id="6a39a28c-03bc-49da-b735-b88abea451c5" name="Default Changelist" comment="Dt Engl Bsp">
+-      <change afterPath="$PROJECT_DIR$/Aufgabe02/deutsch/noun-en.lex" afterDir="false" />
+-      <change afterPath="$PROJECT_DIR$/Aufgabe02/deutsch/noun-wo-infl.lex" afterDir="false" />
++    <list default="true" id="6a39a28c-03bc-49da-b735-b88abea451c5" name="Default Changelist" comment="Dt commit">
++      <change afterPath="$PROJECT_DIR$/Aufgabe03/longest-common-subsequence.py" afterDir="false" />
+       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/Aufgabe02/deutsch/morph.a" beforeDir="false" afterPath="$PROJECT_DIR$/Aufgabe02/deutsch/morph.a" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/Aufgabe02/deutsch/morph.fst" beforeDir="false" afterPath="$PROJECT_DIR$/Aufgabe02/deutsch/morph.fst" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/Aufgabe02/deutsch/noun-reg.lex" beforeDir="false" afterPath="$PROJECT_DIR$/Aufgabe02/deutsch/noun-reg.lex" afterDir="false" />
+     </list>
+     <option name="SHOW_DIALOG" value="false" />
+     <option name="HIGHLIGHT_CONFLICTS" value="true" />
+@@ -27,6 +23,34 @@
+     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
+     <property name="last_opened_file_path" value="$PROJECT_DIR$/Aufgabe01" />
+     <property name="settings.editor.selected.configurable" value="org.jetbrains.plugins.github.ui.GithubSettingsConfigurable" />
++  </component>
++  <component name="RunManager">
++    <configuration name="longest-common-subsequence" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
++      <module name="EET" />
++      <option name="INTERPRETER_OPTIONS" value="" />
++      <option name="PARENT_ENVS" value="true" />
++      <envs>
++        <env name="PYTHONUNBUFFERED" value="1" />
++      </envs>
++      <option name="SDK_HOME" value="" />
++      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/Aufgabe03" />
++      <option name="IS_MODULE_SDK" value="true" />
++      <option name="ADD_CONTENT_ROOTS" value="true" />
++      <option name="ADD_SOURCE_ROOTS" value="true" />
++      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/Aufgabe03/longest-common-subsequence.py" />
++      <option name="PARAMETERS" value="" />
++      <option name="SHOW_COMMAND_LINE" value="false" />
++      <option name="EMULATE_TERMINAL" value="false" />
++      <option name="MODULE_MODE" value="false" />
++      <option name="REDIRECT_INPUT" value="false" />
++      <option name="INPUT_FILE" value="" />
++      <method v="2" />
++    </configuration>
++    <recent_temporary>
++      <list>
++        <item itemvalue="Python.longest-common-subsequence" />
++      </list>
++    </recent_temporary>
+   </component>
+   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+   <component name="TaskManager">
+@@ -44,7 +68,14 @@
+       <option name="project" value="LOCAL" />
+       <updated>1635290846611</updated>
+     </task>
+-    <option name="localTasksCounter" value="2" />
++    <task id="LOCAL-00002" summary="Dt commit">
++      <created>1636152765932</created>
++      <option name="number" value="00002" />
++      <option name="presentableId" value="LOCAL-00002" />
++      <option name="project" value="LOCAL" />
++      <updated>1636152765933</updated>
++    </task>
++    <option name="localTasksCounter" value="3" />
+     <servers />
+   </component>
+   <component name="Vcs.Log.Tabs.Properties">
+@@ -61,6 +92,7 @@
+   </component>
+   <component name="VcsManagerConfiguration">
+     <MESSAGE value="Dt Engl Bsp" />
+-    <option name="LAST_COMMIT_MESSAGE" value="Dt Engl Bsp" />
++    <MESSAGE value="Dt commit" />
++    <option name="LAST_COMMIT_MESSAGE" value="Dt commit" />
+   </component>
+ </project>
+\ No newline at end of file
