@@ -30,6 +30,9 @@ def build_feature_and_weight_vec(train_path):
 # each p(c|d) should be a prob. distribution, i.e. sum to 1
 def calculate_normalized_probs(cls, file_path, features):
     p_class_mail = defaultdict(int)
+    # We are looking at a document given a certain class.
+    # Therefore, the document's (non-normalized) score for the other class should be 0 anyways,
+    # as it doesn't occur for that other class.
     if cls == "ham":
         p_class_mail["spam"] = math.exp(0)
     elif cls == "spam":
@@ -38,12 +41,14 @@ def calculate_normalized_probs(cls, file_path, features):
     with open(file_path, 'r', encoding="ISO-8859-1") as t:
         text = t.read()
         document = text.split()
+        # for each feature that occurs in the doc, its value in the feature vec is the feature's count in the doc
         feature_vec = [(" ".join([x, cls]), document.count(x)) for x in features]
+        # dot product between feature vec and weight vec
         score = sum([weight_vec[cls][i]*feature_vec[i][1] for i in range(len(features))])
         p_class_mail[cls] = math.exp(score)
+        # only after the scores for both classes (given the doc) are known,
+        # we can calculate Z and apply it to the scores.
         Z = sum(p_class_mail.values())
-
-        p_class_mail[cls] = math.exp(score)
         for cls in classes:
             p_class_mail[cls] *= 1/Z
 
