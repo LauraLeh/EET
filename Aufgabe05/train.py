@@ -27,28 +27,33 @@ def build_feature_and_weight_vec(train_path):
     return features, weights
 
 # calculates p(c|d)
-def calculate_normalized_probs(features):
+# each p(c|d) should be a prob. distribution, i.e. sum to 1
+def calculate_normalized_probs(cls, file_path, features):
     p_class_mail = defaultdict(int)
+    if cls == "ham":
+        p_class_mail["spam"] = math.exp(0)
+    elif cls == "spam":
+        p_class_mail["ham"] = math.exp(0)
 
-    for cls in classes:
-        class_dir = os.path.join(train_path, cls)
-        if cls == "ham":
-            p_class_mail["spam"] = math.exp(0)
-        elif cls == "spam":
-            p_class_mail["ham"] = math.exp(0)
+    with open(file_path, 'r', encoding="ISO-8859-1") as t:
+        text = t.read()
+        document = text.split()
+        feature_vec = [(" ".join([x, cls]), document.count(x)) for x in features]
+        score = sum([weight_vec[cls][i]*feature_vec[i][1] for i in range(len(features))])
+        p_class_mail[cls] = math.exp(score)
+        Z = sum(p_class_mail.values())
 
-        for file in os.listdir(class_dir):
-            with open(os.path.join(class_dir, file), 'r', encoding="ISO-8859-1") as t:
-                text = t.read()
-                document = text.split()
-                feature_vec = [(" ".join([x, cls]), document.count(x)) for x in features]
-                score = sum([weight_vec[cls][i]*feature_vec[i][1] for i in range(len(features))])
-                Z = sum(p_class_mail.values())
-                p_class_mail[cls] = 1/Z * math.exp(score)
+        p_class_mail[cls] = math.exp(score)
+        for cls in classes:
+            p_class_mail[cls] *= 1/Z
 
-                print(p_class_mail)
-
+        print(p_class_mail)
 
 
 features, weight_vec = build_feature_and_weight_vec(train_path)
-calculate_normalized_probs(features)
+for cls in classes:
+    class_dir = os.path.join(train_path, cls)
+    for file in os.listdir(class_dir):
+        file_path = os.path.join(class_dir, file)
+        calculate_normalized_probs(cls, file_path, features)
+
