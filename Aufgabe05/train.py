@@ -30,13 +30,11 @@ def build_feature_and_weight_vec(train_path):
 # each p(c|d) should be a prob. distribution, i.e. sum to 1
 def calculate_normalized_probs(cls, file_path, features):
     p_class_mail = defaultdict(int)
-    # We are looking at a document given a certain class.
-    # Therefore, the document's (non-normalized) score for the other class should be 0 anyways,
-    # as it doesn't occur for that other class.
-    if cls == "ham":
-        p_class_mail["spam"] = math.exp(0)
-    elif cls == "spam":
-        p_class_mail["ham"] = math.exp(0)
+    # We are looking at a document *given a certain class*.
+    # Therefore, the document's (non-exponentiated) score of the other class will be 0 anyways.
+    # The actual score for the current class is updated in the following - it won't stay 0.
+    for cls in classes:
+        p_class_mail[cls] = math.exp(0)
 
     with open(file_path, 'r', encoding="ISO-8859-1") as t:
         text = t.read()
