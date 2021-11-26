@@ -5,7 +5,8 @@ import math
 import random
 
 train_path = "dev"
-classes = ["ham", "spam"]
+classes = ["spam", "ham"]
+weight_vec = defaultdict(int)
 
 ## Extract features for the feature vector and build weight vector
 def build_feature_and_weight_vec(train_path):
@@ -21,10 +22,10 @@ def build_feature_and_weight_vec(train_path):
     # and use the rest as features
     most_common = c.most_common(100)[-50:]
     features = [token[0] for token in most_common]
-    weights = defaultdict(int)
+
     for cls in classes:
-        weights[cls] = [random.randrange(-3, 3) for _ in features]
-    return features, weights
+        weight_vec[cls] = [random.randrange(-1, 1) for _ in features]
+    return features
 
 # calculates p(c|d)
 # each p(c|d) should be a prob. distribution, i.e. sum to 1
@@ -43,20 +44,40 @@ def calculate_normalized_probs(cls, file_path, features):
         feature_vec = [(" ".join([x, cls]), document.count(x)) for x in features]
         # dot product between feature vec and weight vec
         score = sum([weight_vec[cls][i]*feature_vec[i][1] for i in range(len(features))])
-        p_class_mail[cls] = math.exp(score)
+        try:
+            p_class_mail[cls] = math.exp(score)
+        except OverflowError:
+            pass
         # only after the scores for both classes (given the doc) are known,
         # we can calculate Z and apply it to the scores.
         Z = sum(p_class_mail.values())
         for cls in classes:
             p_class_mail[cls] *= 1/Z
 
-        print(p_class_mail)
+        return p_class_mail, feature_vec
 
 
-features, weight_vec = build_feature_and_weight_vec(train_path)
-for cls in classes:
-    class_dir = os.path.join(train_path, cls)
-    for file in os.listdir(class_dir):
-        file_path = os.path.join(class_dir, file)
-        calculate_normalized_probs(cls, file_path, features)
+features = build_feature_and_weight_vec(train_path)
+feature_count = len(features)
 
+print(weight_vec)
+
+for _ in range(5):
+    for cls in classes:
+        class_dir = os.path.join(train_path, cls)
+        for file in os.listdir(class_dir):
+            file_path = os.path.join(class_dir, file)
+            # p(class|mail) and observed feature values
+            p_c_d, observed_vec = calculate_normalized_probs(cls, file_path, features)
+            # observed counts
+            observed = [observed_vec[i][1] for i in range(feature_count)]
+            # expected counts
+            for cls in classes:
+                expected_vec = [p_c_d[cls]*observed_vec[i][1] for i in range(feature_count)]
+            expected = [p_c_d[cls]*observed_vec[i][1] for i in range(feature_count)]
+            gradient = [observed[i] - expected[i] for i in range(feature_count)]
+
+            for w in range(len(features)):
+                weight_vec[cls][w] = weight_vec[cls][w] + 0.01 * gradient[w]
+
+    print(weight_vec)
