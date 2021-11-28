@@ -3,12 +3,7 @@ import sys
 from collections import Counter, defaultdict
 import string
 import math
-import random
 import json
-
-train_path = sys.argv[1]
-classes = [dir for dir in os.listdir(train_path) if not dir.startswith(".")]
-weight_vec = defaultdict(int)
 
 def read_stopwords():
     with open("stopwords.txt") as s:
@@ -16,20 +11,21 @@ def read_stopwords():
 
 ## Extracts features for the feature vector and builds weight vector
 def build_features_and_weight_vec(train_path):
+    weight_vec = defaultdict(int)
     all_text = []
     stopwords = read_stopwords()
     for path, directories, files in os.walk(train_path):
         for file in files:
             with open(os.path.join(path, file), 'r', encoding="latin-1") as text:
                 all_text = text.read().split()
-    # The 100 most common words, which aren't stopwords or punctuation, become the features
+    # The 500 most common words, which aren't stopwords or punctuation, become the features
     filtered_text = [tok for tok in all_text if tok not in string.punctuation and tok not in stopwords]
-    most_common = Counter(filtered_text).most_common(100)
+    most_common = Counter(filtered_text).most_common(500)
     features = [token[0] for token in most_common]
 
     for cls in classes:
-        weight_vec[cls] = [random.random() for _ in features] # initialize weight vector with the length of the features
-    return features
+        weight_vec[cls] = [0 for _ in features] # initialize weight vector with the length of the features
+    return features, weight_vec
 
 # Calculates p(c|d)
 def calculate_normalized_probs(cls, file_path, features):
@@ -55,7 +51,9 @@ def calculate_normalized_probs(cls, file_path, features):
 
 
 if __name__ == "__main__":
-    features = build_features_and_weight_vec(train_path)
+    train_path = sys.argv[1]
+    classes = [dir for dir in os.listdir(train_path) if not dir.startswith(".")]
+    features, weight_vec = build_features_and_weight_vec(train_path)
     feature_count = len(features)
     epochs = 3
     eta = 0.2
@@ -74,7 +72,6 @@ if __name__ == "__main__":
                 # update weights with L2 regularization
                 for weight in range(feature_count):
                     weight_vec[cls][weight] = weight_vec[cls][weight] * (1-eta*mu) + eta * gradient[weight]
-
 
     with open(sys.argv[2], 'w', encoding="utf-8") as paramfile:
         json.dump([weight_vec, features], paramfile)
