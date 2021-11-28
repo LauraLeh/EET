@@ -72,7 +72,7 @@ if __name__ == "__main__":
                 expected = [p_c_d[cls] * observed[feat] for feat in range(feature_count)]
                 gradient = [observed[feat] - expected[feat] for feat in range(feature_count)]
                 # update weights with L2 regularization
-                for weight in range(len(features)):
+                for weight in range(feature_count):
                     weight_vec[cls][weight] = weight_vec[cls][weight] * (1-eta*mu) + eta * gradient[weight]
 
 
