@@ -42,9 +42,9 @@ def calculate_normalized_probs(cls, file_path, features):
     with open(file_path, 'r', encoding="ISO-8859-1") as text:
         document = text.read().split()
         # for each feature that occurs in the doc, its value in the feature vec is the feature's count in the doc
-        feature_vec = [(" ".join([feat, cls]), document.count(feat)) for feat in features]
+        feature_vec = [document.count(feat) for feat in features]
         # dot product between feature vec and weight vec
-        score = sum([weight_vec[cls][feat] * feature_vec[feat][1] for feat in range(len(features))])
+        score = sum([weight_vec[cls][feat] * feature_vec[feat] for feat in range(len(features))])
         p_class_mail[cls] = math.exp(score)
         # only after the (primary) scores for both classes are known, we can calculate Z and normalize.
         Z = sum(p_class_mail.values())
@@ -59,21 +59,22 @@ if __name__ == "__main__":
     feature_count = len(features)
     epochs = 3
     eta = 0.2
-    mu = 0.001
+    mu = 0.01
 
     for _ in range(epochs):
         for cls in classes:
             class_dir = os.path.join(train_path, cls)
             for file in os.listdir(class_dir):
                 file_path = os.path.join(class_dir, file)
-                # p(class|mail) and observed feature values
-                p_c_d, observed_vec = calculate_normalized_probs(cls, file_path, features)
-                observed = [observed_vec[feat][1] for feat in range(feature_count)] # observed counts
-                expected = [p_c_d[cls] * observed_vec[feat][1] for feat in range(feature_count)] # expected counts
+                # p(class|mail) and observed counts
+                p_c_d, observed = calculate_normalized_probs(cls, file_path, features)
+                # expected counts
+                expected = [p_c_d[cls] * observed[feat] for feat in range(feature_count)]
                 gradient = [observed[feat] - expected[feat] for feat in range(feature_count)]
                 # update weights with L2 regularization
                 for weight in range(len(features)):
                     weight_vec[cls][weight] = weight_vec[cls][weight] * (1-eta*mu) + eta * gradient[weight]
 
+
     with open(sys.argv[2], 'w', encoding="utf-8") as paramfile:
-        json.dump([weight_vec], paramfile)
+        json.dump([weight_vec, features], paramfile)
