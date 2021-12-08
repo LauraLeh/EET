@@ -126,10 +126,7 @@ if __name__ == "__main__":
             observed = calculate_observed(words, tags)
             gradient = defaultdict(float)
             for feature in expected:
-                if feature in observed:
-                    gradient[feature] = observed[feature] - expected[feature]
-                else:
-                    gradient[feature] = 0 - expected[feature]
+                gradient[feature] = observed[feature] - expected[feature]
             for feature in weights:
                 weights[feature] += learning_rate * gradient[feature]
     print(weights)
