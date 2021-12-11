@@ -32,7 +32,7 @@ def read_data():
 def get_substrings(string):
   string = " " + string + " "
   min_range, max_range = 3, 6
-  substrings = [string[n:n + m] for n in range(len(string) - min_range) for m in range(min_range, max_range + 1)]
+  substrings = [string[min: min+max] for min in range(len(string) - min_range) for max in range(min_range, max_range+1)]
   return substrings
 
 
@@ -93,16 +93,15 @@ def calculate_expected(words: list):
                 bwd_score = prev_score + local_score(features)
                 backward[j][tag] = log_sum_exp(backward[j][tag], bwd_score)
     # calculate estimated feature values
-    eff = defaultdict(float)
+    estimated = defaultdict(float)
     for i in range(1, n):
         for tag, beta_score in backward[i].items():
             for prev_tag, alpha_score in forward[i-1].items():
                 f = get_features(words[i], tag, prev_tag)
-                score = alpha_score + local_score(f)
-                gamma = alpha_score + score + beta_score - forward[-1]["<\s>"]
+                gamma = alpha_score + local_score(f) + beta_score - forward[-1]["<\s>"]
                 for feature in f:
-                    eff[feature] += 1 * gamma # the value of a feature is its occurrence - which is 1
-    return eff
+                    estimated[feature] += 1 * gamma # the value of a feature is its occurrence - which is 1
+    return estimated
 
 
 def calculate_observed(words, tags):
@@ -116,17 +115,17 @@ def calculate_observed(words, tags):
 
 
 if __name__ == "__main__":
-    epochs = 1
+    epochs = 2
     learning_rate = 0.001
     sentences = read_data()
     for _ in range(epochs):
-        for sentence in sentences[0:20]:
-            words, tags = sentence[0], sentence[1]
-            expected = calculate_expected(words)
+        for sentence in sentences[0:5]:
+            words, tags = sentence
+            estimated = calculate_expected(words)
             observed = calculate_observed(words, tags)
             gradient = defaultdict(float)
-            for feature in expected:
-                gradient[feature] = observed[feature] - expected[feature]
+            for feature in estimated:
+                gradient[feature] = observed[feature] - estimated[feature]
             for feature in weights:
                 weights[feature] += learning_rate * gradient[feature]
     print(weights)
