@@ -2,7 +2,6 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="77c4e6f1-9cb4-4e57-87c7-092b89d7b957" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Aufgabe06/crf-train.py" beforeDir="false" afterPath="$PROJECT_DIR$/Aufgabe06/crf-train.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />

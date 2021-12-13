@@ -5,10 +5,9 @@ import sys
 import json
 
 weights = defaultdict(float)
+tagset = {"<s>", "</s>"}
 
 def read_data():
-    global tagset
-    tagset = {"<s>", "</s>"}
     tags = ["<s>"]             # a sentence's tags (with the start-tag)
     words = ["<s>"]            # a sentence's words (with the start-token)
     sentences = []
