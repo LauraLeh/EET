@@ -125,10 +125,9 @@ if __name__ == "__main__":
             beta = backward(words)
             efv = estimated_feat_values(alpha, beta, words)
             ofv = calculate_observed(words, tags)
-            gradient = defaultdict(float)
             for feature in efv:
-                gradient[feature] = ofv[feature] - efv[feature]
-                weights[feature] += learning_rate * gradient[feature]
+                gradient = ofv[feature] - efv[feature]
+                weights[feature] += learning_rate * gradient
 
     with open(sys.argv[2], 'w', encoding="utf-8") as param_file:
         json.dump([weights, tagset], param_file)
