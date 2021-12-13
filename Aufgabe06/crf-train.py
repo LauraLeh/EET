@@ -1,23 +1,25 @@
-from collections import defaultdict
+from collections import defaultdict, Counter
 import itertools
 import math
+import sys
+import json
 
-weights = defaultdict(float)  # weight vector
+weights = defaultdict(float)
 
 def read_data():
     global tagset
-    tagset = {"<s>", "<\s>"}   # all available tags
+    tagset = {"<s>", "</s>"}
     tags = ["<s>"]             # a sentence's tags (with the start-tag)
     words = ["<s>"]            # a sentence's words (with the start-token)
-    sentences = []             # list of sentences
+    sentences = []
 
-    with open("Tiger/develop.txt") as file:
+    with open(sys.argv[1]) as file:
         for line in file:
             line = line.strip()
             if len(line) == 0:
                 # add end-token and end-tag
-                words.append("<\s>")
-                tags.append("<\s>")
+                words.append("</s>")
+                tags.append("</s>")
                 sentences.append((words, tags))
                 words, tags = ["<s>"], ["<s>"]
             else:
@@ -64,7 +66,7 @@ def log_sum_exp(x1, x2):
 def local_score(features):
     return sum([weights[f] for f in features])
 
-def forward(words: list):     # collect forward scores
+def forward(words: list):
     n = len(words) - 1
     forw = defaultdict(lambda: defaultdict(float))
     forw[0]["<s>"] = 0
@@ -76,10 +78,10 @@ def forward(words: list):     # collect forward scores
                 forw[i][tag] = log_sum_exp(forw[i][tag], fwd_score)
     return forw
 
-def backward(words: list):      # collect backward scores
+def backward(words: list):
     n = len(words) - 1
     backw = defaultdict(lambda: defaultdict(float))
-    backw[n]["<\s>"] = 0
+    backw[n]["</s>"] = 0
     for j in range(n-1, 0, -1):
         for tag in tagset:
             for prev_tag, prev_score in backw[j+1].items():
@@ -88,16 +90,18 @@ def backward(words: list):      # collect backward scores
                 backw[j][tag] = log_sum_exp(backw[j][tag], bwd_score)
     return backw
 
-def estimated_feat_values(forward: dict, backward: dict, words: list):     # calculate estimated feature values
+def estimated_feat_values(forward: dict, backward: dict, words: list):
     n = len(words) - 1
     estimated = defaultdict(float)
     for i in range(1, n):
         for tag, beta_score in backward[i].items():
             for prev_tag, alpha_score in forward[i-1].items():
                 f = get_features(words[i], tag, prev_tag)
-                gamma = alpha_score + local_score(f) + beta_score - forward[-1]["<\s>"]
-                for feature in f:
-                    estimated[feature] += 1 * gamma # the value of a feature is its occurrence - which is 1
+                gamma = alpha_score + local_score(f) + beta_score - forward[-1]["</s>"]
+                # first calculate and weight "local" counts, then sum them up into a "global" feature vector
+                local_estimated = Counter(feat for feat in f)
+                for feat in local_estimated:
+                    estimated[feat] += local_estimated[feat] * gamma
     return estimated
 
 def calculate_observed(words, tags):
@@ -105,8 +109,8 @@ def calculate_observed(words, tags):
     n = len(words) - 1
     for i in range(1, n):
         features = get_features(words[i], tags[i], tags[i-1])
-        for feature in features:
-            observed[feature] += 1
+        for feat in features:
+            observed[feat] += 1
     return observed
 
 
@@ -115,7 +119,7 @@ if __name__ == "__main__":
     learning_rate = 0.001
     sentences = read_data()
     for _ in range(epochs):
-        for sentence in sentences[0:5]:
+        for sentence in sentences:
             words, tags = sentence
             alpha = forward(words)
             beta = backward(words)
@@ -124,6 +128,7 @@ if __name__ == "__main__":
             gradient = defaultdict(float)
             for feature in efv:
                 gradient[feature] = ofv[feature] - efv[feature]
-            for feature in weights:
                 weights[feature] += learning_rate * gradient[feature]
-    print(weights)
+
+    with open(sys.argv[2], 'w', encoding="utf-8") as param_file:
+        json.dump([weights, tagset], param_file)
