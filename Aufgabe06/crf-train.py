@@ -4,7 +4,6 @@ import math
 
 weights = defaultdict(float)  # weight vector
 
-
 def read_data():
     global tagset
     tagset = {"<s>", "<\s>"}   # all available tags
@@ -28,13 +27,11 @@ def read_data():
                 tagset.add(tag)
     return sentences
 
-
 def get_substrings(string):
   string = " " + string + " "
   min_range, max_range = 3, 6
   substrings = [string[min: min+max] for min in range(len(string) - min_range) for max in range(min_range, max_range+1)]
   return substrings
-
 
 def get_word_shape(string):
     shape = ""
@@ -49,7 +46,6 @@ def get_word_shape(string):
             shape = shape + x
     return ''.join(x for x, _ in itertools.groupby(shape))
 
-
 def get_features(word, tag, prev_tag):
     features = []
     features.append("TT-" + prev_tag + "-" + tag) # context feature: prev_tag + tag
@@ -60,39 +56,40 @@ def get_features(word, tag, prev_tag):
         features.append('TSUB-' + tag + "-" + substring)  # lexical feature: tag + substring (all substrings of the word)
     return features
 
-
 def log_sum_exp(x1, x2):
     a = max(x1, x2)
     b = min(x1, x2)
     return a + math.log(1 + math.exp(b-a))
 
-
 def local_score(features):
     return sum([weights[f] for f in features])
 
-
-def calculate_expected(words: list):
+def forward(words: list):     # collect forward scores
     n = len(words) - 1
-    forward = defaultdict(lambda: defaultdict(float))
-    backward = defaultdict(lambda: defaultdict(float))
-    forward[0]["<s>"] = 0
-    backward[n]["<\s>"] = 0
-
-    # collect forward scores
+    forw = defaultdict(lambda: defaultdict(float))
+    forw[0]["<s>"] = 0
     for i in range(1, n):
         for tag in tagset:
-            for prev_tag, prev_score in forward[i-1].items():
+            for prev_tag, prev_score in forw[i-1].items():
                 features = get_features(words[i], tag, prev_tag)
                 fwd_score = prev_score + local_score(features)
-                forward[i][tag] = log_sum_exp(forward[i][tag], fwd_score)
-    # collect backward scores
+                forw[i][tag] = log_sum_exp(forw[i][tag], fwd_score)
+    return forw
+
+def backward(words: list):      # collect backward scores
+    n = len(words) - 1
+    backw = defaultdict(lambda: defaultdict(float))
+    backw[n]["<\s>"] = 0
     for j in range(n-1, 0, -1):
         for tag in tagset:
-            for prev_tag, prev_score in backward[j+1].items():
+            for prev_tag, prev_score in backw[j+1].items():
                 features = get_features(words[j], tag, prev_tag)
                 bwd_score = prev_score + local_score(features)
-                backward[j][tag] = log_sum_exp(backward[j][tag], bwd_score)
-    # calculate estimated feature values
+                backw[j][tag] = log_sum_exp(backw[j][tag], bwd_score)
+    return backw
+
+def estimated_feat_values(forward: dict, backward: dict, words: list):     # calculate estimated feature values
+    n = len(words) - 1
     estimated = defaultdict(float)
     for i in range(1, n):
         for tag, beta_score in backward[i].items():
@@ -102,7 +99,6 @@ def calculate_expected(words: list):
                 for feature in f:
                     estimated[feature] += 1 * gamma # the value of a feature is its occurrence - which is 1
     return estimated
-
 
 def calculate_observed(words, tags):
     observed = defaultdict(float)
@@ -121,12 +117,13 @@ if __name__ == "__main__":
     for _ in range(epochs):
         for sentence in sentences[0:5]:
             words, tags = sentence
-            estimated = calculate_expected(words)
-            observed = calculate_observed(words, tags)
+            alpha = forward(words)
+            beta = backward(words)
+            efv = estimated_feat_values(alpha, beta, words)
+            ofv = calculate_observed(words, tags)
             gradient = defaultdict(float)
-            for feature in estimated:
-                gradient[feature] = observed[feature] - estimated[feature]
+            for feature in efv:
+                gradient[feature] = ofv[feature] - efv[feature]
             for feature in weights:
                 weights[feature] += learning_rate * gradient[feature]
     print(weights)
-
