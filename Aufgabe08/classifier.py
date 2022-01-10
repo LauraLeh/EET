@@ -4,9 +4,11 @@ import torch
 from torch import nn, optim
 
 
+### READING THE DATA ###
+
 tokenizer = get_tokenizer('basic_english')
 TEXT = data.Field(sequential=True, tokenize=tokenizer, lower=True)
-LABEL = data.Field(sequential=False)
+LABEL = data.LabelField(sequential=False)
 
 train_data, dev_data = data.TabularDataset.splits(
     path='data',
@@ -16,11 +18,13 @@ train_data, dev_data = data.TabularDataset.splits(
     fields=[('label', LABEL), ('text', TEXT)],
 )
 
-TEXT.build_vocab(train_data)
+# take 10000 most frequent words as vocab, the rest is treated as <unk>
+# for reference: the initial vocab size is 16517
+TEXT.build_vocab(train_data, max_size=10000)
 LABEL.build_vocab(train_data)
 
-# create iterators for train/valid datasets
-train_it, valid_it = data.BucketIterator.splits(
+# create iterators for train/dev datasets
+train_it, dev_it = data.BucketIterator.splits(
   (train_data, dev_data),
   sort_key = lambda x: len(x.text),
   sort = True,
@@ -28,95 +32,82 @@ train_it, valid_it = data.BucketIterator.splits(
   batch_sizes=(32,32)
 )
 
-class Classifier(nn.Module):
+### DEFINING THE MODEL ###
 
+class Classifier(nn.Module):
     def __init__(self, vocab_size, num_classes, embed_size, hidden_size, dropout_rate):
         super().__init__()
         self.embedding = nn.Embedding(vocab_size, embed_size)
-        self.lstm = nn.LSTM(embed_size, hidden_size, bidirectional=True,
-                            batch_first=True)
-        self.pooling = nn.MaxPool2d(2,2)
-        self.linear = nn.Linear(hidden_size, num_classes)
+        self.lstm = nn.LSTM(embed_size, hidden_size, bidirectional=True, batch_first=True)
+        self.linear = nn.Linear(hidden_size*2, num_classes)
         self.dropout = nn.Dropout(dropout_rate)
-
 
     def forward(self, text):
         embedding = self.dropout(self.embedding(text))
         lstm_output, hidden = self.lstm(embedding)
-        pooling = self.pooling(lstm_output)
-        scores = self.linear(pooling)
-
+        lstm_output = self.dropout(lstm_output)
+        pooling = torch.amax(lstm_output, dim=0)
+        scores = self.linear(self.dropout(pooling))
         return scores
 
-model = Classifier(vocab_size=len(TEXT.vocab), num_classes=5,
-                   embed_size=100, hidden_size=64, dropout_rate=0.1)
+VOCAB_SIZE = len(TEXT.vocab)
+NUM_CLASSES = 5
+EMBED_SIZE = 350
+HIDDEN_SIZE = 64
+DROPOUT = 0.3
+LEARNING_RATE = 0.02
+NUM_EPOCHS = 10
 
-numEpochs = 1
+model = Classifier(vocab_size=VOCAB_SIZE, num_classes=NUM_CLASSES,
+                   embed_size=EMBED_SIZE, hidden_size=HIDDEN_SIZE, dropout_rate=DROPOUT)
 criterion = nn.CrossEntropyLoss()
-optimizer = optim.Adam(model.parameters(), lr=0.01)
+optimizer = optim.Adam(model.parameters(), lr=LEARNING_RATE)
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 model.to(device)
 
-"""
-total_dev_tags = 0
-for instance in valid_it:
-    for tags in instance.label:
-        total_dev_tags += 1
-"""
-
+total_dev_tags = sum(1 for _ in dev_data)
 best_accuracy = None
 
-# Training Loop
-for epoch in range(numEpochs):
+
+### TRAINING ###
+
+for epoch in range(NUM_EPOCHS):
     # Put model into training mode
     model.train()
-    for data in train_it:
+    for instance in train_it:
         model.zero_grad()
-        input_sentence = data.text
-        targets = data.label
-
+        input_sentence = instance.text.to(device)
+        targets = instance.label.to(device)
         scores = model(input_sentence)
-        print("TARGET")
-        print(targets)
-        print("SCORES")
-        print(scores)
-
         loss = criterion(scores, targets)
-        print(loss)
-        break
         loss.backward()
         optimizer.step()
 
-    """
     # validation 
     with torch.no_grad():
         model.eval()
         true_positives = 0
-        for valid_data in valid_it:
-            input_sentence = valid_data.text
-            input_sentence = torch.LongTensor(input_sentence).to(device)
-            tag_scores = model(input_sentence)
-            correct = valid_data.label
-            correct = torch.LongTensor(correct).to(device)
+        for dev_instance in dev_it:
+            input_sentence = dev_instance.text.to(device)
+            scores = model(input_sentence)
+            correct = dev_instance.label
+            predictions = [torch.max(x, 0)[1].item() for x in scores]
 
-            preds = [torch.max(x, 0)[1].item() for x in tag_scores]
-
-            correct_tags = LABEL.vocab.itos(correct)
-            predicted_tags = LABEL.vocab.itos(preds)
-
-            for i in range(len(predicted_tags)):
-                if predicted_tags[i] == correct_tags[i]:
+            for i in range(len(predictions)):
+                if predictions[i] == correct[i]:
                     true_positives += 1
 
-        #accuracy = true_positives/total_dev_tags
-        #print("Validation Accuracy:", accuracy)
+        accuracy = true_positives/total_dev_tags
+        print("Validation Accuracy:", accuracy)
 
-        #if best_accuracy is None or best_accuracy < accuracy:
-         # best_accuracy = accuracy
-          #torch.save(model, F"/content/drive/My Drive/rnn.pth")
-          #torch.save(model, args.paramfile+".rnn")
-          #print("Saved!")
+        # save model with best accuracy so far
+        if best_accuracy is None or best_accuracy < accuracy:
+          best_accuracy = accuracy
+          torch.save(model.state_dict(), "model.pth")
+          print("Saved!")
 
         true_positives = 0
         model.train()
-        """
+
+print("TRAINING FINISHED.")
+print("Best Accuracy:", best_accuracy)
