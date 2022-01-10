@@ -1,0 +1,48 @@
+import torch
+from torch import nn
+from torch.nn.utils.rnn import pad_sequence
+from torchtext import data
+from torchtext.data import TabularDataset, BucketIterator
+
+device = torch.device("cuda") if torch.cuda.is_available() else torch.device("cpu")
+
+VOCAB_SIZE = 5000
+BATCH_SIZE = 32
+
+
+LABEL = data.LabelField()
+TEXT = data.Field()
+train_dataset, dev_dataset, test_dataset = TabularDataset.splits(path='data/',
+                                                                train='sentiment.train.tsv',
+                                                                validation='sentiment.dev.tsv',
+                                                                test='sentiment.test.tsv',
+                                                                format='tsv',
+                                                                fields=[('Label', LABEL), ('Text', TEXT)]
+                                                                )
+TEXT.build_vocab(train_dataset)
+LABEL.build_vocab(train_dataset)
+
+train_data, dev_data, test_data = BucketIterator.splits(
+                                    (train_dataset, dev_dataset, test_dataset),
+                                    (BATCH_SIZE, BATCH_SIZE, BATCH_SIZE),
+                                    sort=False
+                                    )
+
+
+class LSTM(nn.Module):
+    def __init__(self):
+        super(LSTM, self).__init__()
+        self.embedding = nn.Embedding(len(TEXT.vocab)+1, 100)
+        self.lstm = nn.LSTM(input_size=100, hidden_size=128, bidirectional=True)
+        self.dropout = nn.Dropout(0.4)
+        self.linear = nn.Linear(in_features=128*2, out_features=5)
+
+    def forward(self, text):
+        lstm_h0 = torch.zeros(1*2, self.MAXLEN, self.lstm_hidden_dim).to(device)
+        lstm_c0 = torch.zeros(1*2, self.MAXLEN, self.lstm_hidden_dim).to(device)
+        embed_out = self.dropout(self.embedding(text))
+        lstm_out, (h, c) = self.lstm(embed_out, (lstm_h0, lstm_c0))
+        out = lstm_out[:, -1, :]
+        out = self.dropout(out)
+        out = self.linear(out)
+        return out
