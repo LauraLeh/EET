@@ -1,0 +1,18 @@
+Validation Accuracy: 0.30517711171662126
+Saved!
+Validation Accuracy: 0.3442325158946412
+Saved!
+Validation Accuracy: 0.3478655767484105
+Saved!
+Validation Accuracy: 0.3614895549500454
+Saved!
+Validation Accuracy: 0.3814713896457766
+Saved!
+Validation Accuracy: 0.36966394187102636
+Validation Accuracy: 0.3678474114441417
+Validation Accuracy: 0.3505903723887375
+Validation Accuracy: 0.37420526793823794
+Validation Accuracy: 0.34514078110808355
+
+TRAINING FINISHED.
+Best Accuracy: 0.3814713896457766
