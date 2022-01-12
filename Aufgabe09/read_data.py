@@ -62,31 +62,36 @@ def build_tree(wors: list, constituentes: list):
             max_const.append((c_2, c[1], c[2]))
         else:
             max_const.append(c)
-    print(max_const)
-    d = 0
-    print(max_distance)
-    print(len(max_const))
-    while d != max_distance+1:
-        print("d ist ", d)
-        for x in range(0, len(max_const)):
-            c = max_const[x]
-            if c[2]-c[1] == 1 and d == 1:
-                w = "("+c[0]+" "+wors[c[1]]+")"
-                if w not in sentence:
-                    sentence.append(w)
-                #print(sentence)
-            elif c[2]-c[1] == d:
-                print("d ist", d, "c ist ", c)
-                sentence[c[1]] = "("+c[0]+sentence[c[1]]
-                sentence[c[2]-1] = sentence[c[2]]+")"
-            if x == len(max_const)-1:
-                d += 1
-                break
-    sentence = "".join(sentence).replace(marker, "")
-    return sentence
+    rem_const = []
+    for x in range(0, len(max_const)):
+        c = max_const[x]
+        if c[2]-c[1] == 1 and marker not in c[0]:
+            w = "("+c[0]+" "+wors[c[1]]+")"
+            if ["",w] not in sentence:
+                sentence.append(["",w])
+        else:
+            rem_const.append(c)
+    rem_const.reverse()
+    for c in rem_const:
+        sentence[c[1]][0] = "(" + c[0] + sentence[c[1]][0]
+        sentence[c[2]-1][1] = sentence[c[2]-1][1] + ")"
+    return "".join([x[0]+x[1] for x in sentence]).replace(marker, "")
 
 
 with open("data/laura.txt", "r") as file:
+    for line in file:
+        w, c, _, _ = process_tree(line.replace("\n", ""), 0, 0)
+        c.reverse()
+        print("wordlist: ", w, "\nConstituents: ", c)
+        s = build_tree(w, c)
+        print(s)
+        if s != line.replace("\n", ""):
+            print("Fehler")
+        else:
+            print("WORKS")
+
+
+'''with open("data/laura.txt", "r") as file:
     for line in file:
         try:
             w, c, _, _ = process_tree(line.replace("\n", ""), 0, 0)
@@ -94,6 +99,10 @@ with open("data/laura.txt", "r") as file:
             print(w, c)
             s = build_tree(w, c)
             print(s)
+            if s != line.replace("\n", ""):
+                print("Fehler")
+            else:
+                print("WORKS")
         except:
             print("Error 1 in Syntax")
-            exit()
+            exit()'''
