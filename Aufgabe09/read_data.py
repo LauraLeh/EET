@@ -67,14 +67,13 @@ def build_tree(wors: list, constituentes: list):
         c = max_const[x]
         if c[2]-c[1] == 1 and marker not in c[0]:
             w = "("+c[0]+" "+wors[c[1]]+")"
-            if ["",w] not in sentence:
-                sentence.append(["",w])
+            sentence.append(["",w])
         else:
             rem_const.append(c)
     rem_const.reverse()
     for c in rem_const:
-        sentence[c[1]][0] = "(" + c[0] + sentence[c[1]][0]
-        sentence[c[2]-1][1] = sentence[c[2]-1][1] + ")"
+            sentence[c[2] - 1][1] = sentence[c[2] - 1][1] + ")"
+            sentence[c[1]][0] = "(" + c[0] + sentence[c[1]][0]
     return "".join([x[0]+x[1] for x in sentence]).replace(marker, "")
 
 
@@ -82,13 +81,11 @@ with open("data/laura.txt", "r") as file:
     for line in file:
         w, c, _, _ = process_tree(line.replace("\n", ""), 0, 0)
         c.reverse()
-        print("wordlist: ", w, "\nConstituents: ", c)
+        print("wordlist: ",len(w), w, "\nConstituents: ", c)
         s = build_tree(w, c)
         print(s)
         if s != line.replace("\n", ""):
             print("Fehler")
-        else:
-            print("WORKS")
 
 
 '''with open("data/laura.txt", "r") as file:
