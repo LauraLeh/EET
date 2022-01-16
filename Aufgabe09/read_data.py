@@ -1,7 +1,7 @@
 
 def process_tree(tree: str, s: int, index: int): #s ist startpos
     if tree[s] != "(":
-        print("Error 2 in Syntax")
+        print("Error in Syntax")
         exit()
     words, constituents = [], []
     current_const, current_word = "", ""
@@ -72,34 +72,25 @@ def build_tree(wors: list, constituentes: list):
             rem_const.append(c)
     rem_const.reverse()
     for c in rem_const:
-            sentence[c[2] - 1][1] = sentence[c[2] - 1][1] + ")"
-            sentence[c[1]][0] = "(" + c[0] + sentence[c[1]][0]
+        sentence[c[2] - 1][1] = sentence[c[2] - 1][1] + ")"
+        sentence[c[1]][0] = "(" + c[0] + sentence[c[1]][0]
     return "".join([x[0]+x[1] for x in sentence]).replace(marker, "")
 
 
-with open("data/laura.txt", "r") as file:
-    for line in file:
-        w, c, _, _ = process_tree(line.replace("\n", ""), 0, 0)
-        c.reverse()
-        print("wordlist: ",len(w), w, "\nConstituents: ", c)
-        s = build_tree(w, c)
-        print(s)
-        if s != line.replace("\n", ""):
-            print("Fehler")
-
-
-'''with open("data/laura.txt", "r") as file:
+with open("data/dev.txt", "r") as file:
+    correct = 0
+    error = 0
     for line in file:
         try:
             w, c, _, _ = process_tree(line.replace("\n", ""), 0, 0)
             c.reverse()
-            print(w, c)
+            #print(f"wordlist: {w}\nConstituents: {c}")
             s = build_tree(w, c)
-            print(s)
+            #print(s)
             if s != line.replace("\n", ""):
-                print("Fehler")
+                error +=1
             else:
-                print("WORKS")
+                correct += 1
         except:
-            print("Error 1 in Syntax")
-            exit()'''
+            error += 1
+    print("correct: ", correct , "\nerror: ", error)
